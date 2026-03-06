@@ -69,6 +69,18 @@ az role assignment create \
 
 az role assignment list --assignee "${component_to_client_id[ingress]}" --scope /subscriptions/"$AZURE_AUTH_SUBSCRIPTION_ID"/resourceGroups/"$BASE_DOMAIN_RESOURCE_GROUP" --query '[].id' -otsv >> "${SHARED_DIR}/azure_role_assignment_ids"
 
+# Workaround for OCPBUGS-55916: Grant Network Contributor to cloud-provider to allow public IP deletion
+az role assignment create \
+  --assignee "${component_to_client_id[cloud-provider]}" \
+  --role "Network Contributor" \
+  --scope  /subscriptions/"$AZURE_AUTH_SUBSCRIPTION_ID"/resourceGroups/"$RG_HC"
+az role assignment list --assignee "${component_to_client_id[cloud-provider]}" --role "Network Contributor" --scope /subscriptions/"$AZURE_AUTH_SUBSCRIPTION_ID"/resourceGroups/"$RG_HC" --query '[].id' -otsv >> "${SHARED_DIR}/azure_role_assignment_ids"
+az role assignment create \
+  --assignee "${component_to_client_id[cloud-provider]}" \
+  --role "Network Contributor" \
+  --scope  /subscriptions/"$AZURE_AUTH_SUBSCRIPTION_ID"/resourceGroups/"$RG_VNET"
+az role assignment list --assignee "${component_to_client_id[cloud-provider]}" --role "Network Contributor" --scope /subscriptions/"$AZURE_AUTH_SUBSCRIPTION_ID"/resourceGroups/"$RG_VNET" --query '[].id' -otsv >> "${SHARED_DIR}/azure_role_assignment_ids"
+
 cat <<EOF >"${SHARED_DIR}"/hypershift_azure_mi_file.json
 {
     "managedIdentitiesKeyVault": {

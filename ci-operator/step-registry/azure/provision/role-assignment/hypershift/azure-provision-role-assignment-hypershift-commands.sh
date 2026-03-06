@@ -63,6 +63,13 @@ for component in "${CONTROLPLANE_COMPONENTS[@]}"; do
     ROLE="a1f96423-95ce-4224-ab27-4e3dc72facd4"
     scopes+=" /subscriptions/$AZURE_AUTH_SUBSCRIPTION_ID/resourceGroups/$RG_NSG"
     scopes+=" /subscriptions/$AZURE_AUTH_SUBSCRIPTION_ID/resourceGroups/$RG_VNET"
+    
+    # Workaround for OCPBUGS-55916: Grant Network Contributor to cloud-provider to allow public IP deletion
+    for scope in "/subscriptions/$AZURE_AUTH_SUBSCRIPTION_ID/resourceGroups/$RG_HC" "/subscriptions/$AZURE_AUTH_SUBSCRIPTION_ID/resourceGroups/$RG_VNET"; do
+      if [ -z "$(az role assignment list --assignee $object_id --role "Network Contributor" --scope $scope -o tsv)" ]; then
+        az role assignment create --assignee-object-id "$object_id" --role "Network Contributor" --scope "$scope" --assignee-principal-type "ServicePrincipal"
+      fi
+    done
   fi
 
   if [[ $component == "controlPlaneOperator" ]]; then
