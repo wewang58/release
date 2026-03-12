@@ -249,7 +249,7 @@ tests:
       OCP_IMAGE_N3: release:n3minor
       OCP_IMAGE_N4: release:n4minor
     env:
-      CI_TESTS_RUN: (^(TestCreateCluster$|TestCreateClusterV2$))
+      CI_TESTS_RUN: ^TestCreateCluster$|TestNodepoolMachineconfigGetsRolledout
       ENABLE_HYPERSHIFT_CERT_ROTATION_SCALE: "true"
       REQUEST_SERVING_COMPONENT_TEST: "true"
     workflow: hypershift-aws-e2e-external
