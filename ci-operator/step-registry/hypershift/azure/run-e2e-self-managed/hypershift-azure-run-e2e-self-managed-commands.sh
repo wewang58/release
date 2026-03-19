@@ -10,13 +10,14 @@ AZURE_AUTH_TENANT_ID="$(<"${AZURE_AUTH_LOCATION}" jq -r .tenantId)"
 AZURE_WORKLOAD_IDENTITIES_LOCATION="/etc/hypershift-ci-jobs-self-managed-azure-e2e/workload-identities.json"
 AZURE_SA_TOKEN_ISSUER_KEY_PATH="/etc/hypershift-ci-jobs-self-managed-azure-e2e/serviceaccount-signer.private"
 AZURE_OIDC_ISSUER_URL="https://smazure.blob.core.windows.net/smazure"
-AZURE_KMS_KEY="$(<"${SHARED_DIR}/azure_active_key_url")"
-AZURE_KMS_CREDENTIALS_SECRET="$(<"${SHARED_DIR}/azure_kms_secret_name")"
+AZURE_KMS_INFO_LOCATION="/etc/hypershift-ci-jobs-self-managed-azure-e2e/kms-info.json"
+AZURE_KMS_KEY="$(jq -r '."kms-key"' "${AZURE_KMS_INFO_LOCATION}")"
+AZURE_KMS_CREDENTIALS_SECRET="$(jq -r '."kms-credentials-secret-name"' "${AZURE_KMS_INFO_LOCATION}")"
+
 az --version
 az login --service-principal -u "${AZURE_AUTH_CLIENT_ID}" -p "${AZURE_AUTH_CLIENT_SECRET}" --tenant "${AZURE_AUTH_TENANT_ID}" --output none
 
 set -x
-
 set -o nounset
 set -o errexit
 set -o pipefail
@@ -93,3 +94,4 @@ hack/ci-test-e2e.sh -test.v \
   --e2e.latest-release-image="${OCP_IMAGE_LATEST}" \
   --e2e.previous-release-image="${OCP_IMAGE_PREVIOUS}" &
 wait $!
+  
