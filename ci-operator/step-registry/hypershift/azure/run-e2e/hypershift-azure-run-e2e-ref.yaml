@@ -56,10 +56,6 @@ ref:
       name: CI_TESTS_RUN
     - default: ""
       name: TEST_CPO_OVERRIDE
-    - default: "1.15.1"
-      name : CILIUM_VERSION
-    - default: ""
-      name: EXTERNAL_CNI_PROVIDER
     - default: "aro4"
       name: HYPERSHIFT_AZURE_MARKETPLACE_IMAGE_OFFER
     - default: "azureopenshift"
@@ -71,6 +67,12 @@ ref:
     - default: ""
       name: OAUTH_EXTERNAL_OIDC_PROVIDER
       documentation: "supported value: keycloak, azure"
+    - default: ""
+      name: CILIUM_VERSION
+      documentation: "The version of Cilium to use."
+    - default: ""
+      name: EXTERNAL_CNI_PROVIDER
+      documentation: "The external CNI provider to use, e.g., cilium."
   from: hypershift-tests
   grace_period: 30m0s
   resources:
