@@ -1113,3 +1113,6 @@
     - org: openshift-priv
       repos:
         - hypershift
+    - org: wewang58
+      repos:
+        - hypershift
